@@ -28,4 +28,4 @@ client.credit_balance
 
 Note: Since normal SMS messages don't support Unicode characters, this library (crudely) strips out any character whose integer value is >255. 
 
-If you have any questions, email me iwarshak@stripey.net
+Feel free to email me with any questions. Ian Warshak <iwarshak@stripey.net>
