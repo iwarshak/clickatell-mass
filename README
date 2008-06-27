@@ -1,0 +1,31 @@
+A simple library to send SMS messages through the Clickatell gateway (clickatell.com). This library handles some of the basic operations like sending messages, checking the status of a message, checking your account balance, etc.
+
+It is geared toward sending one message to a bunch of different phone numbers. If the message has more than 50 recipients, it will break it up into multiple messages (as required by Clickatell)
+
+This library was was extracted from, and is currently used in 2 of my businesses, School's Out (schoolsout.com), and CampusWire (thecampuswire.com). 
+
+Example usage
+
+require 'clickatell'
+client = Clickatell.new do |client|
+  client.username = MY_USERNAME
+  client.password = MY_PASSWORD
+  client.app_id   = APP_ID
+end
+
+result = client.send("test message", %w(2105551000 2104440000))
+=> [{:claimcheck=>"90fd3391a40f35e281b3e2506e5502b6e", :time=>Thu Jun 26 16:36:22 -0500 2008, :message=>"test message", :phonenumber=>"2105551000"}, {:claimcheck=>"88d5df89ce3c21f7417755aec59c0ea23", :time=>Thu Jun 26 16:36:22 -0500 2008, :message=>"test message", :phonenumber=>"2104440000"}]
+
+
+# Check the status of a message by claimcheck
+client.get_status "0fd3391a40f35e281b3e2506e5502b6e"
+=> "Received by recipient"
+
+# See how many credits you have left
+client.credit_balance
+=> 21920
+
+
+Note: Since normal SMS messages don't support Unicode characters, this library (crudely) strips out any character whose integer value is >255. 
+
+If you have any questions, email me iwarshak@stripey.net
