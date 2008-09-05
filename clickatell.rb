@@ -123,10 +123,6 @@ class Clickatell
 
   
   def strip_unicode_characters(message)
-    buff = ""
-    0.upto(message.chars.size - 1) do |i|
-        buff += message.chars[i].chr if message.chars[i] < 256
-    end
-    buff
+    return message.unpack("c*").reject {|c| c <0 || c>255}.pack("c*")
   end
 end
