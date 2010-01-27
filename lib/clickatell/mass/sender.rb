@@ -49,14 +49,7 @@ module Clickatell
           parsed_response = parse_response(response, recipients)
           time = Time.now
           parsed_response.each do |r|
-            claimcheck = r.claimcheck
-            phonenumber = r.recipient
-            error = r.error
-            if error
-              response_callback.call(:recipient => phonenumber, :error => error, :time => time) 
-            else
-              response_callback.call(:recipient => phonenumber, :claimcheck => claimcheck, :time => time) 
-            end
+            response_callback.call(r)
           end
         rescue Exception => e
           logger.fatal("Error parsing responses. \n#{response}\n#{e.backtrace}") if logger
@@ -96,18 +89,18 @@ module Clickatell
           # "ID: 200d56c4df859f850d4a6d2c678c3cdf To: 12105555555\nERR: 128, Number delisted To: 12\n"
           if response.match(/To/)  
             t_err, t_to = response.scan(/(.*) To: 1(.*)/).flatten
-            parsed_responses << OpenStruct.new(:recipient => t_to, :error => t_err)
+            parsed_responses << { :recipient => t_to, :error => t_err }
           else
-            parsed_responses << OpenStruct.new(:recipient => recipients.first, :error => response)
+            parsed_responses << { :recipient => recipients.first, :error => response }
           end
         else
           if response.match(/To/)
             # "ID: 6471819cea4cbd45e0ea055720410878 To: 12105555555\nID: 6b51ea281e4f64f9bddf966c04087ca5 To: 12105555555\n"
             t_id, t_to = response.scan(/ID: (.*) To: 1(.*)/).flatten
-            parsed_responses << OpenStruct.new(:recipient => t_to, :claimcheck => t_id)
+            parsed_responses << { :recipient => t_to, :claimcheck => t_id }
           else
             # "ID: 82b44ca548082ae24ccf83fa8b2a108a"
-            parsed_responses << OpenStruct.new(:recipient => recipients.first, :claimcheck => response.scan(/ID: (.*)/).flatten.first)
+            parsed_responses << { :recipient => recipients.first, :claimcheck => response.scan(/ID: (.*)/).flatten.first }
           end
         end
       end

@@ -5,3 +5,7 @@ require 'ostruct'
 
 require 'clickatell/mass/sender'
 require 'clickatell/mass/query'
+
+module Clickatell
+  class ParsingError < RuntimeError; end
+end
