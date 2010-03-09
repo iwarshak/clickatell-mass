@@ -1,6 +1,23 @@
 = clickatell-mass
 
-Description goes here.
+A simple library to send SMS messages through the Clickatell gateway (clickatell.com). This library handles some of the basic operations like sending messages and checking the status of a message
+
+It is geared toward sending one message to a bunch of different phone numbers. If the message has more than 200 
+recipients, it will break it up into multiple messages (as required by Clickatell)
+
+This library was was extracted from, and is currently used in 2 of my businesses, School's Out (schoolsout.com), and CampusWire (thecampuswire.com).
+
+Example usage:
+
+clickatell = Clickatell::Sender.new
+clickatell.logger = Logger.new("#{Rails.root}/log/sent_sms.log")
+clickatell.mailer_callback = Proc.new{|subject, message| SystemNotifier.deliver_notice(subject, message) }
+p = Proc.new do |res| 
+      sent_log = SmsLog.create(:phonenumber => res[:recipient], :claimcheck => res[:claimcheck], :text => text, :message_id => message_id)
+    end
+clickatell.response_callbacks << p
+clickatell.deliver(text, users_arr, Clickatell::FINAL_AND_INTERMEDIATE_STATUS)
+
 
 == Note on Patches/Pull Requests
  
