@@ -22,6 +22,12 @@ class TestClickatellMass < Test::Unit::TestCase
       Clickatell::Sender.stubs(:post).returns('a fake response')
     end
     
+    should "split up into groups of 200" do
+      numbers = 1.upto(500).to_a.collect {|c| "5555555" + ("%03d" % c)} 
+      Clickatell::Sender.expects(:post).times(3).returns('a fake response')
+      @c.deliver("test", numbers)
+    end
+    
     should "prepare country code" do
       numbers = ["1-210-555-0000", "210-555-0001", '12105550002', '2105550003']
       assert_equal @c.send(:prepend_country_code, numbers), ["1-210-555-0000", "1210-555-0001", '12105550002', '12105550003'].join(',')
