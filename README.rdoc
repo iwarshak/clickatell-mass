@@ -9,14 +9,14 @@ This library was was extracted from, and is currently used in 2 of my businesses
 
 Example usage:
 
-clickatell = Clickatell::Sender.new
-clickatell.logger = Logger.new("#{Rails.root}/log/sent_sms.log")
-clickatell.mailer_callback = Proc.new{|subject, message| SystemNotifier.deliver_notice(subject, message) }
-p = Proc.new do |res| 
-      sent_log = SmsLog.create(:phonenumber => res[:recipient], :claimcheck => res[:claimcheck], :text => text, :message_id => message_id)
-    end
-clickatell.response_callbacks << p
-clickatell.deliver(text, users_arr, Clickatell::FINAL_AND_INTERMEDIATE_STATUS)
+  clickatell = Clickatell::Sender.new
+  clickatell.logger = Logger.new("#{Rails.root}/log/sent_sms.log")
+  clickatell.mailer_callback = Proc.new{|subject, message| SystemNotifier.deliver_notice(subject, message) }
+  p = Proc.new do |res| 
+        sent_log = SmsLog.create(:phonenumber => res[:recipient], :claimcheck => res[:claimcheck], :text => text, :message_id => message_id)
+      end
+  clickatell.response_callbacks << p
+  clickatell.deliver(text, users_arr, Clickatell::FINAL_AND_INTERMEDIATE_STATUS)
 
 
 == Note on Patches/Pull Requests
